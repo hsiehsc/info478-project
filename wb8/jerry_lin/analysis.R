@@ -14,4 +14,4 @@ wa_plot <- ggplot(wa_data, aes(Year, Washington, group = 1)) +
 ggsave("C:/Users/Jerry/Desktop/info_478/info478-project/wb8/jerry_lin/homicide_chart.png",
        wa_plot,
        height = 12,
-       width = 48)
+       width = 24)
