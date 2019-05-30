@@ -1,23 +1,20 @@
 library(tidyverse)
 library(leaflet)
 library(tigris)
+library(plotly)
 
 states <- states()
 
-states %>% 
-  leaflet() %>% 
-  addTiles() %>% 
-  addPolygons(popup=~NAME)
-
 data <- read.csv("minimum_wage_data.csv", stringsAsFactors = F)
 
+
+
 data_2017 <- data %>% 
-  filter(Year == "2017") %>% 
+  filter(Year == "2017")
   
 states_merged <- geo_join(states, data_2017, "NAME", "State")
 
 pal <- colorNumeric("Greens", domain=states_merged$Low.Value)
-
 
 states_merged <- subset(states_merged, !is.na(Low.Value))
 
@@ -46,3 +43,5 @@ leaflet() %>%
             values = states_merged$Low.Value, 
             position = "bottomright", 
             title = "Minimum Wage ($)")
+
+
