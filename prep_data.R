@@ -26,13 +26,13 @@ changed <- data %>%
   mutate(Low.Value = replace(Low.Value, (Low.Value < 1.15 & Year <= 1969 & Year >= 1968), 1.15))
 
 change_equivalent2018 <- function(row, data) {
-  if (row$High.2018 == 0) {
-    year <- row$Year
-    federal_equi <- data %>%
-      filter(State == "Federal (FLSA)") %>%
-      filter(Year == year) %>%
-      select(High.2018)
-    row$High.2018 = federal_equi
+  year <- row$Year
+  federal_equi <- changed %>%
+    filter(State == "Federal (FLSA)") %>%
+    filter(Year == year) %>%
+    select(High.2018)
+  if ((!is.na(row$High.2018)) & (row$High.2018 == 0 | row$High.2018 < federal_equi[[1]][1])) {
+    row$High.2018 = federal_equi[[1]][1]
     row
   } else {
     row
