@@ -33,6 +33,11 @@ change_equivalent2018 <- function(row, data) {
     select(High.2018)
   if ((!is.na(row$High.2018)) & (row$High.2018 == 0 | row$High.2018 < federal_equi[[1]][1])) {
     row$High.2018 = federal_equi[[1]][1]
+    federal_low <- changed %>%
+      filter(State == "Federal (FLSA)") %>%
+      filter(Year == year) %>%
+      select(Low.2018)
+    row$Low.2018 = federal_low[[1]][1]
     row
   } else {
     row
