@@ -258,7 +258,7 @@ svymean(~x.rfbmi4, Obesity_2008_data, na.rm = T) -> mean_2008
 result_2008 <- result_2008 %>%
   mutate(Year = "2008")
 
-write.csv(result_2007, "result_2001_2009/2008overweightandobesity.csv")
+write.csv(result_2008, "result_2001_2009/2008overweightandobesity.csv")
 
 
 data2009 <- sasxport.get("CDBRFS09.XPT")
@@ -289,4 +289,4 @@ svymean(~x.rfbmi4, Obesity_2009_data, na.rm = T) -> mean_2009
 
 result_2009 <- result_2009 %>%
   mutate(Year = "2009")
-write.csv(result_2007, "result_2001_2009/2009overweightandobesity.csv")
+write.csv(result_2009, "result_2001_2009/2009overweightandobesity.csv")
