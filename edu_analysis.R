@@ -221,6 +221,7 @@ state_bar_plot <-
 
 state_bar_plot  
 
+# Join obesity data w/ education data for comparison
 obese_2009 <- read.csv("trial/result_2010_2017/2009overweightandobesity.csv",
                        stringsAsFactors = F)
 obese_2010 <- read.csv("trial/result_2010_2017/2010overweightandobesity.csv",
