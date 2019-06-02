@@ -5,7 +5,7 @@ library(tidyverse)
 shinyServer(function(input, output) {
     ### plotly choropleth ####
     output$plotlymap <- renderPlotly({
-        data <- read.csv("data/minimum_wage_data.csv", stringsAsFactors = F)
+        data <- read.csv("data/prepped_minimum_wage.csv", stringsAsFactors = F)
         data_select <- data %>% 
             filter(Year == input$year_slider)
         data_select$hover <- with(data_select, paste(State, '<br>',
