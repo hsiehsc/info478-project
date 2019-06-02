@@ -4,6 +4,8 @@ library(dplyr)
 library(plotly)
 library(RColorBrewer)
 
+setwd("C:/Users/Jerry/Desktop/info_478/info478-project")
+
 #- Read tables
 edu_2009 <- read.csv("data/edu/ACS_09_5YR_S1501_with_ann.csv", stringsAsFactors = F)
 edu_2010 <- read.csv("data/edu/ACS_10_5YR_S1501_with_ann.csv", stringsAsFactors = F)
@@ -111,21 +113,21 @@ edu_df <- do.call("rbind", list(edu_2009, edu_2010, edu_2011, edu_2012, edu_2013
 
 # Choropleth maps:
 
-select_choro_yr <- filter(edu_df, year == 2009)
+select_choro_yr <- filter(edu_df, year == 2009) # ui
 
 # choro bachelor complete
 bachelor_choropleth <-
   plot_ly(
     select_choro_yr,
     type = "choropleth",
-    z = ~ at_least_bachelors, # ui
+    z = ~ at_least_bachelors, # ~ui
     zmin = 15,
     zmax = 50,
     hoverinfo = "text",
     text = paste0(
-      select_choro_yr$state, ": ", # ui
+      select_choro_yr$state, ": ", # ~ui
       select_choro_yr$at_least_bachelors, "%"
-    ), # ui
+    ), # ~ui
     locations = ~ Abbreviation,
     locationmode = "USA-states",
     color = ~ at_least_bachelors,
@@ -148,14 +150,14 @@ hs_choropleth <-
   plot_ly(
     select_choro_yr,
     type = "choropleth",
-    z = ~ at_least_hs_grad, # ui
+    z = ~ at_least_hs_grad,
     zmin = 75,
     zmax = 100,
     hoverinfo = "text",
     text = paste0(
-      select_choro_yr$state, ": ", # ui
+      select_choro_yr$state, ": ",
       select_choro_yr$at_least_hs_grad, "%"
-    ), # ui
+    ),
     locations = ~ Abbreviation,
     locationmode = "USA-states",
     color = ~ at_least_hs_grad,
@@ -174,7 +176,7 @@ hs_choropleth <-
 hs_choropleth
 
 # Horizontal Bar Plot of state and percentages of education attainment
-selected_state_yr <- filter(edu_df, state == "Alabama", year == 2009)
+selected_state_yr <- filter(edu_df, state == "Alabama", year == 2009) # ui
 
 state_bar_plot <- 
   plot_ly(selected_state_yr,
@@ -252,3 +254,28 @@ obese_df <- do.call("rbind", list(obese_2009, obese_2010, obese_2011, obese_2012
 
 combined_df <- left_join(edu_df, obese_df, 
                           by = c("geo_id2" = "x.state", "year" = "Year"))
+
+# Scatter plot of obesity vs percent > high school
+select_combined_yr <- filter(combined_df, year == 2009) %>% na.omit() # ui
+
+obese_edu_plot <-
+  plot_ly(select_combined_yr,
+          x = ~x.rfbmi5,
+          y = ~at_least_hs_grad,
+          type = "scatter",
+          mode = "markers",
+          hovertext = paste0(select_combined_yr$state, ": ", '\n',
+                             "Percent Completed At Least High School: ", 
+                             select_combined_yr$at_least_hs_grad, "%", '\n',
+                             "Obesity Rate: ", round(select_combined_yr$x.rfbmi5, 3)),
+          hoverinfo = "text",
+          marker = list(size = 10,
+                        color = 'rgba(255, 182, 193, .9)',
+                        line = list(color = 'rgba(152, 0, 0, .8)',
+                                    width = 2))) %>%
+  layout(xaxis = list(title="Obesity Rate"),
+         yaxis = list(title="% Completed At Least High School"),
+         title = paste0("% Completed At Least High School vs Obesity Rate in ",
+                        select_combined_yr$year))
+
+obese_edu_plot
