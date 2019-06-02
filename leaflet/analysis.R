@@ -45,3 +45,4 @@ leaflet() %>%
             title = "Minimum Wage ($)")
 
 
+
