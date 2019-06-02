@@ -221,3 +221,33 @@ state_bar_plot <-
 
 state_bar_plot  
 
+obese_2009 <- read.csv("trial/result_2010_2017/2009overweightandobesity.csv",
+                       stringsAsFactors = F)
+obese_2010 <- read.csv("trial/result_2010_2017/2010overweightandobesity.csv",
+                       stringsAsFactors = F)
+obese_2011 <- read.csv("trial/result_2010_2017/2011overweightandobesity.csv",
+                       stringsAsFactors = F)
+obese_2012 <- read.csv("trial/result_2010_2017/2012overweightandobesity.csv",
+                       stringsAsFactors = F)
+obese_2013 <- read.csv("trial/result_2010_2017/2013overweightandobesity.csv",
+                       stringsAsFactors = F)
+obese_2014 <- read.csv("trial/result_2010_2017/2014overweightandobesity.csv",
+                       stringsAsFactors = F)
+obese_2015 <- read.csv("trial/result_2010_2017/2015overweightandobesity.csv",
+                       stringsAsFactors = F)
+obese_2016 <- read.csv("trial/result_2010_2017/2016overweightandobesity.csv",
+                       stringsAsFactors = F)
+obese_2017 <- read.csv("trial/result_2010_2017/2017overweightandobesity.csv",
+                       stringsAsFactors = F)
+
+colnames(obese_2009)[3] <- "x.rfbmi5"
+colnames(obese_2010)[3] <- "x.rfbmi5"
+
+obese_df <- do.call("rbind", list(obese_2009, obese_2010, obese_2011, obese_2012, 
+                                  obese_2013, obese_2014, obese_2015, 
+                                  obese_2016, obese_2017)) %>% 
+  select(-X) %>%
+  mutate(`x.state` = as.character(`x.state`))
+
+combined_df <- left_join(edu_df, obese_df, 
+                          by = c("geo_id2" = "x.state", "year" = "Year"))
