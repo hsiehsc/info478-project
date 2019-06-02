@@ -255,8 +255,11 @@ obese_df <- do.call("rbind", list(obese_2009, obese_2010, obese_2011, obese_2012
 combined_df <- left_join(edu_df, obese_df, 
                           by = c("geo_id2" = "x.state", "year" = "Year"))
 
-# Scatter plot of obesity vs percent > high school
-select_combined_yr <- filter(combined_df, year == 2009) %>% na.omit() # ui
+# Scatter plot of obesity vs percent > high school (omit DC)
+select_combined_yr <- filter(combined_df, year == 2009, geo_id2 != 11) %>% 
+  na.omit() # ui
+linear_coeff <- round(
+  cor(select_combined_yr$x.rfbmi5, select_combined_yr$at_least_hs_grad), 3)
 
 obese_edu_plot <-
   plot_ly(select_combined_yr,
@@ -276,6 +279,11 @@ obese_edu_plot <-
   layout(xaxis = list(title="Obesity Rate"),
          yaxis = list(title="% Completed At Least High School"),
          title = paste0("% Completed At Least High School vs Obesity Rate in ",
-                        select_combined_yr$year))
+                        select_combined_yr$year),
+         annotations = list(text = paste0("r = ", linear_coeff),
+                            showarrow = F,
+                            font = list(color = 'rgba(152, 0, 0, 1)'),
+                            x = 0.585,
+                            y = 80))
 
 obese_edu_plot
