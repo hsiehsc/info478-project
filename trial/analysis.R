@@ -28,3 +28,4 @@ svymean(~x.rfbmi5, Obesity_2017_data, na.rm = T) -> mean_2017
 write.csv(result_2017, "2017overweightandobesity.csv")
 result_2017 <- result_2017 %>%
                 mutate(Year = "2017")
+
