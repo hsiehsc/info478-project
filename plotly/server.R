@@ -42,11 +42,15 @@ shinyServer(function(input, output) {
     homicide <- na.omit(homicide)
     homicide <- homicide %>%
                 rename(State = variable)
-    homicide_select <- reactive({homicide %>% 
+    homicide_select <- reactive({homicide %>%
         filter(State == input$state_text_name)})
 
     output$homicide_graph <- renderPlotly({
-      plot_ly(data = homicide_select(), type = "scatter", x=~Year, y=~value) 
+      plot_ly(data = homicide_select(), type = "scatter", x=~Year, y=~value) %>%
+        layout(title = paste0("Homicide Rates per 100,000 people in ",
+                              input$state_text_name),
+               xaxis = list(title = "Year"), yaxis = list(title =
+                                      "Homicide Rates per 100,000"))
 })
     ##### minimum wage and homicide rates #####
     homicide_wage <- left_join(homicide, data)
@@ -54,9 +58,16 @@ shinyServer(function(input, output) {
     
     hom_wage_select <- reactive({homicide_wage %>% 
         filter(State == input$state_hom_wage)})
-    
+    x_hom_wage <- "Minimum Wage in U.S. Dollars (2018 Adjusted)"
+    y_hom_wage <- "Homicide Rates per 100,000 people"
     output$p_hom_wage <- renderPlotly({
-      plot_ly(data = hom_wage_select(), type = "scatter", x=~value,
-              y=~High.2018) 
+      plot_ly(data = hom_wage_select(), type = "scatter", x=~High.2018,
+              y=~value) %>% 
+        layout(xaxis = list(title =
+                "Minimum Wage in U.S. Dollars (2018 Adjusted)"),
+               yaxis = list(title =
+                "Homicide Rates per 100,000 people"),
+               title = paste0("Minimum Wage (2018 Adjusted) vs. Homicide",
+                              " rates for ", input$state_hom_wage))
     })
 })

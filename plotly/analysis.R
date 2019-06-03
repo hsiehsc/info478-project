@@ -54,10 +54,11 @@ test_select <- test %>%
   filter(State == "New Hampshire")
 
 data_select <- data %>% 
-  filter(State = "New Hampshire")
+  filter(State == "New Hampshire")
 
 test_data <- left_join(data_select, test_select)
-plot_ly(data = test_data, type = "scatter", x=~High.2018, y=~value) 
+plot_ly(data = test_data, type = "scatter", x=~High.2018, y=~value) %>% 
+  layout(title = "aasdf", xaxis = list(title = "asdf"))
 
 
 
