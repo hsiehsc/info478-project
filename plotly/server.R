@@ -1,7 +1,5 @@
-library(shiny)
-library(plotly)
-library(tidyverse)
 
+state_list <- state.name
 shinyServer(function(input, output) {
     ### plotly choropleth ####
     output$plotlymap <- renderPlotly({
@@ -25,7 +23,7 @@ shinyServer(function(input, output) {
         )
         plot_geo(data_select, locationmode = 'USA-states') %>%
             add_trace(
-                z = ~Low.Value, text = ~hover, locations = ~StateAbb,
+                z = ~High.Value, text = ~hover, locations = ~StateAbb,
                 color = ~Low.Value, colors = 'Greens'
             ) %>%
             colorbar(title = "Minimum Wage") %>%
@@ -38,13 +36,27 @@ shinyServer(function(input, output) {
     ##### end plotly choropleth #####
     
     ##### homicide #####
-    state_list <- state.name
-    homicide_raw <- read.csv("data/homicide_rates.csv", stringsAsFactors = F)
-    homicide <- homicide_raw[-52:-218,]
-    homicide_select <- reactive(homicide %>% 
-        select(Year, input$state_text_name))
+    homicide_raw <- read.csv("data/homicide_rates.csv", stringsAsFactors = F,
+                             check.names = F)
+    homicide <- melt(homicide_raw, id = "Year")
+    homicide <- na.omit(homicide)
+    homicide <- homicide %>%
+                rename(State = variable)
+    homicide_select <- reactive({homicide %>% 
+        filter(State == input$state_text_name)})
+
     output$homicide_graph <- renderPlotly({
-        plot_ly(data = homicide_select(), x=~Year, y=~input$state_text_name)
+      plot_ly(data = homicide_select(), type = "scatter", x=~Year, y=~value) 
+})
+    ##### minimum wage and homicide rates #####
+    homicide_wage <- left_join(homicide, data)
+    homicide_wage <- na.omit(homicide_wage)
+    
+    hom_wage_select <- reactive({homicide_wage %>% 
+        filter(State == input$state_hom_wage)})
+    
+    output$p_hom_wage <- renderPlotly({
+      plot_ly(data = hom_wage_select(), type = "scatter", x=~value,
+              y=~High.2018) 
     })
 })
-

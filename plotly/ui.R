@@ -1,6 +1,10 @@
 library(shiny)
 library(leaflet)
 library(shinythemes)
+library(plotly)
+library(ggthemes)
+library(reshape2)
+library(tidyverse)
 
 plotly_wage <- tabPanel(
     "Minimum Wage Map",
@@ -19,19 +23,31 @@ homicide_graph <- tabPanel(
     "Homicide",
     titlePanel("Homicide Rates Graphed by State and Year"),
     sidebarLayout(
-        selectInput("state_text_name", "Select State",
-                    state_list,
-                    selectize = TRUE
+        selectizeInput("state_text_name", "Select State",
+                    state_list
         ),
     mainPanel(
         plotlyOutput("homicide_graph")
     )
 ))
 
+homicide_wage <- tabPanel(
+  "Homicide and Wage",
+  titlePanel("Homicide Rates and Minimum Wage Graphed Together"),
+  sidebarLayout(
+    selectizeInput("state_hom_wage", "Select State",
+                   state_list
+    ),
+    mainPanel(
+      plotlyOutput("p_hom_wage")
+    )
+  ))
+
 shinyUI(navbarPage(
     # includeCSS("style.css"),
     theme = shinytheme("spacelab"),
     "An Analysis of Minimum Wage",
     plotly_wage,
-    homicide_graph
+    homicide_graph,
+    homicide_wage
 ))
