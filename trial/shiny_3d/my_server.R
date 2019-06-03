@@ -12,7 +12,7 @@ source("maker.R")
 my_server <- function(input, output) {
   set.seed(100)
   output$statee <- renderPlotly({
-    return(maker(input$state))
+    return(maker(input$target))
   })
 }
 

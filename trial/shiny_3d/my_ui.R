@@ -4,8 +4,12 @@ library(shinythemes)
 library(ggvis)
 library(leaflet)
 library(shinyWidgets)
+library(plotly)
 
 minimum_wage <- read.csv("prepped_minimum_wage.csv")
+code <- unique(minimum_wage$State)
+names(code) <- unique(minimum_wage$State)
+
 
 my_ui <- fluidPage(
   navbarPage(
@@ -18,10 +22,8 @@ my_ui <- fluidPage(
           checkboxGroupInput(
             inputId = "target",
             label = h3("Select a State"),
-            choices = list(
-              unique(minimum_wage$State)
-            ),
-            selected = "Alabama"
+            choices = unique(minimum_wage$State),
+            selected = unique(minimum_wage$State)
           )
         ),
         mainPanel(plotlyOutput("statee"))
