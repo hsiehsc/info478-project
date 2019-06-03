@@ -12,7 +12,7 @@ all_data <- all_data %>%
               filter(x.state != 11)
 ## no columbia district
 all_data$X <- state.name
-minimum_wage <- read.csv("../data/prepped_minimum_wage.csv")
+minimum_wage <- read.csv("prepped_minimum_wage.csv")
 minimum_wage <- minimum_wage %>%
                   filter(Year >= 2001)
 ## take out columbia district
