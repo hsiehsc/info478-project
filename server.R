@@ -86,17 +86,19 @@ shinyServer(function(input, output) {
                               " rates for ", input$state_hom_wage))
     })
 
-    
+    # Joining data by state and year
     final_data <- left_join(minimum_wage, all_data, by = c("State" = "X", "Year" = "Year"))
+    # Selecting columns that we want to present
     final_data <- final_data %>%
       select(State, Year, x.rfbmi2, High.2018)
     names(final_data)[3] <- "Percentage"
     names(final_data)[4] <- "minimum Wage"
 #    if(!is.null(input$target)) {
+    # filtering the userinput
       reactive(final_data <- final_data[final_data$State %in% input$target, ])
 #    }
     
-    
+    # Creating the plot
     output$statee <- renderPlotly({
       plot_ly(final_data, x = ~Year, y = ~State, z = ~`minimum Wage`, color = ~Percentage) %>%
       layout(title = "3D plot of Obesity and overweight VS Year VS Minimum wage") %>%
