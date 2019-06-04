@@ -17,3 +17,4 @@ my_server <- function(input, output) {
 }
 
 shinyUI(my_server)
+

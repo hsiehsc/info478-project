@@ -6,10 +6,6 @@ library(leaflet)
 library(shinyWidgets)
 library(plotly)
 
-minimum_wage <- read.csv("prepped_minimum_wage.csv")
-code <- unique(minimum_wage$State)
-names(code) <- unique(minimum_wage$State)
-
 
 my_ui <- fluidPage(
   navbarPage(
