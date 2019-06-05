@@ -7,6 +7,7 @@ library(plotly)
 library(ggthemes)
 library(reshape2)
 library(tidyverse)
+library(RColorBrewer)
 
 # Reading in Variables
 state_list <- state.name
