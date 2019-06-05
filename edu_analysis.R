@@ -4,114 +4,16 @@ library(dplyr)
 library(plotly)
 library(RColorBrewer)
 
-setwd("C:/Users/Jerry/Desktop/info_478/info478-project")
-
-#- Read tables
-edu_2009 <- read.csv("data/edu/ACS_09_5YR_S1501_with_ann.csv", stringsAsFactors = F)
-edu_2010 <- read.csv("data/edu/ACS_10_5YR_S1501_with_ann.csv", stringsAsFactors = F)
-edu_2011 <- read.csv("data/edu/ACS_11_5YR_S1501_with_ann.csv", stringsAsFactors = F)
-edu_2012 <- read.csv("data/edu/ACS_12_5YR_S1501_with_ann.csv", stringsAsFactors = F)
-edu_2013 <- read.csv("data/edu/ACS_13_5YR_S1501_with_ann.csv", stringsAsFactors = F)
-edu_2014 <- read.csv("data/edu/ACS_14_5YR_S1501_with_ann.csv", stringsAsFactors = F)
-edu_2015 <- read.csv("data/edu/ACS_15_5YR_S1501_with_ann.csv", stringsAsFactors = F)
-edu_2016 <- read.csv("data/edu/ACS_16_5YR_S1501_with_ann.csv", stringsAsFactors = F)
-edu_2017 <- read.csv("data/edu/ACS_17_5YR_S1501_with_ann.csv", stringsAsFactors = F)
-states <- read.csv("data/edu/states.csv", stringsAsFactors = F)
-
-#- Organize data into 1 table
-
-# Function changes colnames into something understandable
-change_colnames <- function(df) {
-  colnames(df) <- c("geo_id1", "geo_id2", "state", "pop", "less_than_9th",
-                    "9th_to_12th", "hs_grad", "some_col", "associates", "bachelors",
-                    "graduate", "at_least_hs_grad", "at_least_bachelors",
-                    "poverty_less_than_hs_grad", "poverty_hs_grad", 
-                    "poverty_some_college_assoc", "poverty_at_least_bachelors",
-                    "a", "b", "c", "d", "e", "f")
-  
-  return(df)
-}
-
-cols_as_numeric <- function(df) {
-  return (mutate(df, less_than_9th = as.numeric(less_than_9th),
-         `9th_to_12th` = as.numeric(`9th_to_12th`),
-         hs_grad = as.numeric(hs_grad),
-         some_col = as.numeric(some_col),
-         associates = as.numeric(associates),
-         bachelors = as.numeric(bachelors),
-         graduate = as.numeric(graduate),
-         at_least_hs_grad = as.numeric(at_least_hs_grad),
-         at_least_bachelors = as.numeric(at_least_bachelors),
-         poverty_less_than_hs_grad = as.numeric(poverty_less_than_hs_grad),
-         poverty_hs_grad = as.numeric(poverty_hs_grad),
-         poverty_some_college_assoc = as.numeric(poverty_some_college_assoc),
-         poverty_at_least_bachelors = as.numeric(poverty_at_least_bachelors)))
-}
-
-# Function removes unneeded columns
-select_cols <- function(df) {
-  return(select(df, -pop, -a, -b, -c, -d, -e, -f))
-}
-
-# Change col names and remove useless columns
-edu_2009 <- change_colnames(edu_2009) %>% 
-  select_cols() %>% 
-  inner_join(states, by=c('state' = 'State')) %>%
-  cols_as_numeric()
-edu_2010 <- change_colnames(edu_2010) %>% 
-  select_cols() %>% 
-  inner_join(states, by=c('state' = 'State')) %>%
-  cols_as_numeric()
-edu_2011 <- change_colnames(edu_2011) %>% 
-  select_cols() %>% 
-  inner_join(states, by=c('state' = 'State')) %>%
-  cols_as_numeric()
-edu_2012 <- change_colnames(edu_2012) %>% 
-  select_cols() %>% 
-  inner_join(states, by=c('state' = 'State')) %>%
-  cols_as_numeric()
-edu_2013 <- change_colnames(edu_2013) %>% 
-  select_cols() %>% 
-  inner_join(states, by=c('state' = 'State')) %>%
-  cols_as_numeric()
-edu_2014 <- change_colnames(edu_2014) %>% 
-  select_cols() %>% 
-  inner_join(states, by=c('state' = 'State')) %>%
-  cols_as_numeric()
-edu_2015 <- change_colnames(edu_2015) %>% 
-  select_cols() %>% 
-  inner_join(states, by=c('state' = 'State')) %>%
-  cols_as_numeric()
-edu_2016 <- change_colnames(edu_2016) %>%
-  select_cols() %>% 
-  inner_join(states, by=c('state' = 'State')) %>%
-  cols_as_numeric()
-edu_2017 <- change_colnames(edu_2017) %>% 
-  select_cols() %>% 
-  inner_join(states, by=c('state' = 'State')) %>%
-  cols_as_numeric()
-
-# Add col for year
-edu_2009$year <- 2009
-edu_2010$year <- 2010
-edu_2011$year <- 2011
-edu_2012$year <- 2012
-edu_2013$year <- 2013
-edu_2014$year <- 2014
-edu_2015$year <- 2015
-edu_2016$year <- 2016
-edu_2017$year <- 2017
-
-# Yeet
-edu_df <- do.call("rbind", list(edu_2009, edu_2010, edu_2011, edu_2012, edu_2013,
-                                   edu_2014, edu_2015, edu_2016, edu_2017))
-
 # TO DO: 
 #- choropleth of percentage > high school and percentage > bachelors
 #- bar plot of percentages
 #- percentage high school and percentage bachelors vs obesity
 
 # Choropleth maps:
+
+edu_df <- read.csv("data/edu/all_edu.csv", stringsAsFactors = F)
+combined_df <- read.csv("data/edu/combined_edu_obese.csv", stringsAsFactors = F)
+
 
 select_choro_yr <- filter(edu_df, year == 2009) # ui
 
@@ -223,37 +125,7 @@ state_bar_plot <-
 
 state_bar_plot  
 
-# Join obesity data w/ education data for comparison
-obese_2009 <- read.csv("trial/result_2010_2017/2009overweightandobesity.csv",
-                       stringsAsFactors = F)
-obese_2010 <- read.csv("trial/result_2010_2017/2010overweightandobesity.csv",
-                       stringsAsFactors = F)
-obese_2011 <- read.csv("trial/result_2010_2017/2011overweightandobesity.csv",
-                       stringsAsFactors = F)
-obese_2012 <- read.csv("trial/result_2010_2017/2012overweightandobesity.csv",
-                       stringsAsFactors = F)
-obese_2013 <- read.csv("trial/result_2010_2017/2013overweightandobesity.csv",
-                       stringsAsFactors = F)
-obese_2014 <- read.csv("trial/result_2010_2017/2014overweightandobesity.csv",
-                       stringsAsFactors = F)
-obese_2015 <- read.csv("trial/result_2010_2017/2015overweightandobesity.csv",
-                       stringsAsFactors = F)
-obese_2016 <- read.csv("trial/result_2010_2017/2016overweightandobesity.csv",
-                       stringsAsFactors = F)
-obese_2017 <- read.csv("trial/result_2010_2017/2017overweightandobesity.csv",
-                       stringsAsFactors = F)
 
-colnames(obese_2009)[3] <- "x.rfbmi5"
-colnames(obese_2010)[3] <- "x.rfbmi5"
-
-obese_df <- do.call("rbind", list(obese_2009, obese_2010, obese_2011, obese_2012, 
-                                  obese_2013, obese_2014, obese_2015, 
-                                  obese_2016, obese_2017)) %>% 
-  select(-X) %>%
-  mutate(`x.state` = as.character(`x.state`))
-
-combined_df <- left_join(edu_df, obese_df, 
-                          by = c("geo_id2" = "x.state", "year" = "Year"))
 
 # Scatter plot of obesity vs percent > high school (omit DC)
 select_combined_yr <- filter(combined_df, year == 2009, geo_id2 != 11) %>% 
@@ -273,8 +145,8 @@ obese_edu_plot <-
                              "Obesity Rate: ", round(select_combined_yr$x.rfbmi5, 3)),
           hoverinfo = "text",
           marker = list(size = 10,
-                        color = 'rgba(255, 182, 193, .9)',
-                        line = list(color = 'rgba(152, 0, 0, .8)',
+                        color = 'rgba(51, 102, 204, .9)',
+                        line = list(color = 'rgba(0, 0, 102, .8)',
                                     width = 2))) %>%
   layout(xaxis = list(title="Obesity Rate"),
          yaxis = list(title="% Completed At Least High School"),
@@ -282,8 +154,11 @@ obese_edu_plot <-
                         select_combined_yr$year),
          annotations = list(text = paste0("r = ", linear_coeff),
                             showarrow = F,
-                            font = list(color = 'rgba(152, 0, 0, 1)'),
+                            font = list(color = 'rgba(51, 102, 156, 1)'),
                             x = 0.585,
                             y = 80))
 
 obese_edu_plot
+
+write.csv(edu_df, "data/edu/all_edu.csv")
+write.csv(combined_df, "data/edu/combined_edu_obese.csv")
