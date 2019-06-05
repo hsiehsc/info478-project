@@ -88,7 +88,10 @@ introduction <- tabPanel(
             that looks at obesity/overweight statistics and the minimum wage
             plotted against time from 2001 - 2017.
            Users can select which state(s) they want to analyze and see general
-           trends of obesity rates and the minimum wage."),
+           trends of obesity rates and the minimum wage.
+           The fourth plot analyzes the relationship between educational
+           attainment and minimum wage. Finally, the fifth tab analyzes how
+           obesity might be related to minimum wage."),
     tags$h4(strong("Creators", style = "color: #2C3E50;")),
     tags$ol(
       tags$li("Steven Hsieh"),
