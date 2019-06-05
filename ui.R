@@ -53,6 +53,15 @@ introduction <- tabPanel(
       href = "https://factfinder.census.gov/faces/tableservices/jsf/pages/productview.xhtml?pid=ACS_17_5YR_S1501&prodType=table",
       "The base table for education attainment can be found here."
     ),
+    tags$br(),
+    tags$br(),
+    tags$p(
+      "The homicide data was sourced from the Uniform Crime Reporting (UCR) Program developed by the FBI. This data is used to determine homicide rates for each state which can then be compared with minimum wage."
+    ),
+    tags$a(
+      href = "http://www.ucrdatatool.gov",
+      "You can find a link to the homicide rates by clicking here."
+    ),
     tags$h4(strong("Questions that can be asked", style = "color: #2C3E50;")),
     tags$p("The data set is 2,750 rows long and summarizes information by
             Year, State, Table Data, Footnote, High.Value (the higher of the
