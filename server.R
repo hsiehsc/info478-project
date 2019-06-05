@@ -250,8 +250,8 @@ shinyServer(function(input, output) {
             line = list(color = "#004080"),
             hoverinfo = "text",
             hovertext = paste0(select_state_obese()$year, ':\n', 
-                               "% Completed High School: ", 
-                               select_state_obese()$x.rfbmi5, "%")
+                               "Obesity Rate: ", 
+                               select_state_obese()$x.rfbmi5)
           ) %>%
             add_trace(
               y = ~minwage_div10,
