@@ -101,13 +101,14 @@ shinyServer(function(input, output) {
 
   ## Combine obesity data with minimum wage data
   final_data <- left_join(minimum_wage, all_data,
-                          by = c("State" = "X", "Year" = "Year"))
+    by = c("State" = "X", "Year" = "Year")
+  )
   final_data <- final_data %>%
     select(State, Year, x.rfbmi2, High.2018)
   names(final_data)[3] <- "Overweight Percentage"
   names(final_data)[4] <- "minimum Wage"
   reactive(final_data <- final_data[final_data$State %in% input$target, ])
-  
+
   ## Render the 3D plot
   output$statee <- renderPlotly({
     plot_ly(final_data,
@@ -123,71 +124,78 @@ shinyServer(function(input, output) {
       ))
     return(maker(input$target))
   })
-  
-  ##### EDUCATION ATTAINMENT ##### 
-  
+
+  ##### EDUCATION ATTAINMENT #####
+
   # Read education data
   edu_df <- read.csv("data/edu/all_edu.csv", stringsAsFactors = F)
-  combined_df <- read.csv("data/edu/combined_edu_obese.csv", stringsAsFactors = F)
-  edu_min_wage <- read.csv("data/min_wage_and_edu.csv", stringsAsFactors = F) %>%
-    mutate(edu_div10 = at_least_hs_grad / 10,
-           ratio = at_least_hs_grad * 0.8 / High.2018)
-  obese_min_wage <- read.csv("data/obese_min_wage.csv", stringsAsFactors = F) %>%
-    mutate(minwage_div10 = High.2018 / 10,
-           ratio = High.2018 / (20 * x.rfbmi5))
-  
+  combined_df <- read.csv("data/edu/combined_edu_obese.csv",
+                          stringsAsFactors = F)
+  edu_min_wage <- read.csv("data/min_wage_and_edu.csv",
+                           stringsAsFactors = F) %>%
+    mutate(
+      edu_div10 = at_least_hs_grad / 10,
+      ratio = at_least_hs_grad * 0.8 / High.2018
+    )
+  obese_min_wage <- read.csv("data/obese_min_wage.csv",
+                             stringsAsFactors = F) %>%
+    mutate(
+      minwage_div10 = High.2018 / 10,
+      ratio = High.2018 / (20 * x.rfbmi5)
+    )
+
   # Filter Education DF by Year
-  select_choro_yr <- 
+  select_choro_yr <-
     reactive({
       filter(edu_df, year == input$shiny_yr) # ui, select year
     })
-  
+
   # Create choropleth map of education attainment:
   # (either by at least bachelors or at least high school grad)
   edu_choro <- reactive({
     plot_ly(
       select_choro_yr(),
       type = "choropleth",
-      z = ~ at_least_hs_grad,
-      key = ~ state,
+      z = ~at_least_hs_grad,
+      key = ~state,
       source = "stateplot",
       zmin = 75,
       zmax = 100,
       hoverinfo = "text",
       text = paste0(
         select_choro_yr()$state, ": ",
-        select_choro_yr()$at_least_hs_grad, "%" 
+        select_choro_yr()$at_least_hs_grad, "%"
       ),
-      locations = ~ Abbreviation,
+      locations = ~Abbreviation,
       locationmode = "USA-states",
-      color = ~ at_least_hs_grad,
+      color = ~at_least_hs_grad,
       colors = brewer.pal(9, "YlGnBu"),
       colorbar = list(title = "Percentage")
     ) %>%
       layout(
         title = "Percentage of Residents with At Least A High School Diploma",
         geo = list(
-          scope = 'usa',
-          projection = list(type = 'albers usa'),
+          scope = "usa",
+          projection = list(type = "albers usa"),
           showlakes = F
         )
       )
   })
-  output$edu_choropleth = renderPlotly(edu_choro())
-  
+  output$edu_choropleth <- renderPlotly(edu_choro())
+
   # Obesity Choropleth
-  obese_choro_yr <- 
+  obese_choro_yr <-
     reactive({
       dplyr::filter(obese_min_wage, year == input$obese_yr)
     })
-  
-  obese_choropleth <- 
+
+  obese_choropleth <-
     reactive({
       plot_ly(
         obese_choro_yr(),
         type = "choropleth",
-        key = ~ state,
-        z = ~ x.rfbmi5,
+        key = ~state,
+        z = ~x.rfbmi5,
         zmin = 0.5,
         zmax = 0.75,
         source = "obeseplot",
@@ -196,45 +204,47 @@ shinyServer(function(input, output) {
           obese_choro_yr()$state, ": \n", "Obesity Rate: ",
           round(obese_choro_yr()$x.rfbmi5, 3)
         ),
-        locations = ~ Abbreviation,
+        locations = ~Abbreviation,
         locationmode = "USA-states",
-        color = ~ x.rfbmi5,
+        color = ~x.rfbmi5,
         colors = rev(brewer.pal(9, "Spectral")),
         colorbar = list(title = "Obesity Rate")
       ) %>%
-      layout(
-        title = "Obesity Rate", # ui
-        geo = list(
-          scope = 'usa',
-          projection = list(type = 'albers usa'),
-          showlakes = F
+        layout(
+          title = "Obesity Rate", # ui
+          geo = list(
+            scope = "usa",
+            projection = list(type = "albers usa"),
+            showlakes = F
+          )
         )
-      )
     })
-  
+
   output$obese_choro <- renderPlotly(obese_choropleth())
-  
+
   # Click reactive obese choro
-  
+
   # Click selection for obese choro
   output$selection2 <- renderPrint({
     s <- event_data("plotly_click", source = "obeseplot")
     if (length(s) == 0) {
-      cat("Click on a state to display a minimum wage - obesity rate graph\n",
-          "(double click to clear)")
+      cat(
+        "Click on a state to display a minimum wage - obesity rate graph\n",
+        "(double click to clear)"
+      )
     } else {
       cat("You selected: ", s$key)
     }
   })
-  
-  output$obese_line <- 
+
+  output$obese_line <-
     renderPlotly({
       # Get state
       s <- event_data("plotly_click", source = "obeseplot")
       if (length(s)) {
         selected_state <- s$key
         # Filter by state
-        select_state_obese <- 
+        select_state_obese <-
           reactive({
             dplyr::filter(obese_min_wage, state == selected_state)
           })
@@ -243,23 +253,29 @@ shinyServer(function(input, output) {
           plot_ly(
             select_state_obese(),
             x = ~year,
-            y = ~x.rfbmi5, 
+            y = ~x.rfbmi5,
             name = "Obesity Rate",
             type = "scatter",
             mode = "lines",
             line = list(color = "#004080"),
             hoverinfo = "text",
-            hovertext = paste0(select_state_obese()$year, ':\n', 
-                               "Obesity Rate: ", 
-                               select_state_obese()$x.rfbmi5)
+            hovertext = paste0(
+              select_state_obese()$year, ":
+",
+              "Obesity Rate: ",
+              select_state_obese()$x.rfbmi5
+            )
           ) %>%
             add_trace(
               y = ~minwage_div10,
               name = "Minimum Wage ($/hr)",
               line = list(color = "#008040"),
-              hovertext = paste0(select_state_obese()$year, ':\n', "Minimum Wage: $", 
-                                 select_state_obese()$High.2018, 
-                                 "/hr")
+              hovertext = paste0(
+                select_state_obese()$year, ":
+", "Minimum Wage: $",
+                select_state_obese()$High.2018,
+                "/hr"
+              )
             ) %>%
             add_trace(
               y = ~ratio,
@@ -270,8 +286,10 @@ shinyServer(function(input, output) {
             layout(
               xaxis = list(title = "Year"),
               yaxis = list(showticklabels = F, title = ""),
-              title = list(title = paste0("Obesity Rate and Minimum Wage Over Time In ",
-                                          select_state_obese()$state))
+              title = list(title = paste0(
+                "Obesity Rate and Minimum Wage Over Time In ",
+                select_state_obese()$state
+              ))
             )
         })()
       } else {
@@ -280,20 +298,22 @@ shinyServer(function(input, output) {
         )
       }
     })
-  
+
   # Reactive proportion bar by state and year
-  
+
   # Click selection for edu attainment choro
   output$selection <- renderPrint({
     s <- event_data("plotly_click", source = "stateplot")
     if (length(s) == 0) {
-      cat("Click on a state to display a detailed education attainment plot\n",
-          "(double click to clear)")
+      cat(
+        "Click on a state to display a detailed education attainment plot\n",
+        "(double click to clear)"
+      )
     } else {
       cat("You selected: ", s$key)
     }
   })
-  
+
   output$state_bar <-
     renderPlotly({
       # Get selected state
@@ -301,53 +321,82 @@ shinyServer(function(input, output) {
       if (length(s)) {
         selected_state <- s$key
         # Filter by state and year
-        selected_state_yr <- 
+        selected_state_yr <-
           reactive({
-            dplyr::filter(edu_df, state == selected_state, year == input$shiny_yr)
+            dplyr::filter(edu_df, state == selected_state,
+                          year == input$shiny_yr)
           })
         # Make plot
         reactive({
           plot_ly(selected_state_yr(),
-                  x = ~less_than_9th,
-                  source = "stateplot",
-                  type = "bar",
-                  name = "Less than 9th grade",
-                  orientation = "h",
-                  hovertext = paste0("Less than 9th grade: ", selected_state_yr()$less_than_9th, "%"),
-                  hoverinfo = "text",
-                  marker = list(color = "#ffffcc",
-                                line = list(color = "#000000",
-                                            width = 1))) %>%
-            add_trace(x = ~`X9th_to_12th`,
-                      name = "9th to 12th grade",
-                      hovertext = paste0("9th to 12th grade: ", selected_state_yr()$`X9th_to_12th`, "%"),
-                      marker = list(color = "#c7e9b4")) %>%
-            add_trace(x = ~hs_grad,
-                      name = "High School Graduate",
-                      hovertext = paste0("High School Graduate: ", selected_state_yr()$hs_grad, "%"),
-                      marker = list(color = "#7fcdbb")) %>%
-            add_trace(x = ~some_col,
-                      name = "Some college",
-                      hovertext = paste0("Some college: ", selected_state_yr()$some_col, "%"),
-                      marker = list(color = "#41b6c4")) %>%
-            add_trace(x = ~associates,
-                      name = "Associate's Degree",
-                      hovertext = paste0("Associate's Degree: ", selected_state_yr()$associates, "%"),
-                      marker = list(color = "#1d91c0")) %>%
-            add_trace(x = ~bachelors,
-                      name = "Bachelor's Degree",
-                      hovertext = paste0("Bachelor's Degree: ", selected_state_yr()$bachelors, "%"),
-                      marker = list(color = "#225ea8")) %>%
-            add_trace(x = ~graduate,
-                      name = "Graduate Degree",
-                      hovertext = paste0("Graduate Degree: ", selected_state_yr()$graduate, "%"),
-                      marker = list(color = "#0c2c84")) %>%
-            layout(barmode = 'stack',
-                   title = paste("Percentage of Education Attainment in",
-                                 selected_state_yr()$state, "in", selected_state_yr()$year),
-                   xaxis = list(title="Percentage"),
-                   yaxis = list(showticklabels = F),
-                   margin = list(pad = 10))
+            x = ~less_than_9th,
+            source = "stateplot",
+            type = "bar",
+            name = "Less than 9th grade",
+            orientation = "h",
+            hovertext = paste0("Less than 9th grade: ",
+                               selected_state_yr()$less_than_9th, "%"),
+            hoverinfo = "text",
+            marker = list(
+              color = "#ffffcc",
+              line = list(
+                color = "#000000",
+                width = 1
+              )
+            )
+          ) %>%
+            add_trace(
+              x = ~`X9th_to_12th`,
+              name = "9th to 12th grade",
+              hovertext = paste0("9th to 12th grade: ",
+                                 selected_state_yr()$`X9th_to_12th`, "%"),
+              marker = list(color = "#c7e9b4")
+            ) %>%
+            add_trace(
+              x = ~hs_grad,
+              name = "High School Graduate",
+              hovertext = paste0("High School Graduate: ",
+                                 selected_state_yr()$hs_grad, "%"),
+              marker = list(color = "#7fcdbb")
+            ) %>%
+            add_trace(
+              x = ~some_col,
+              name = "Some college",
+              hovertext = paste0("Some college: ",
+                                 selected_state_yr()$some_col, "%"),
+              marker = list(color = "#41b6c4")
+            ) %>%
+            add_trace(
+              x = ~associates,
+              name = "Associate's Degree",
+              hovertext = paste0("Associate's Degree: ",
+                                 selected_state_yr()$associates, "%"),
+              marker = list(color = "#1d91c0")
+            ) %>%
+            add_trace(
+              x = ~bachelors,
+              name = "Bachelor's Degree",
+              hovertext = paste0("Bachelor's Degree: ",
+                                 selected_state_yr()$bachelors, "%"),
+              marker = list(color = "#225ea8")
+            ) %>%
+            add_trace(
+              x = ~graduate,
+              name = "Graduate Degree",
+              hovertext = paste0("Graduate Degree: ",
+                                 selected_state_yr()$graduate, "%"),
+              marker = list(color = "#0c2c84")
+            ) %>%
+            layout(
+              barmode = "stack",
+              title = paste(
+                "Percentage of Education Attainment in",
+                selected_state_yr()$state, "in", selected_state_yr()$year
+              ),
+              xaxis = list(title = "Percentage"),
+              yaxis = list(showticklabels = F),
+              margin = list(pad = 10)
+            )
         })()
       } else {
         plotly_empty(
@@ -355,7 +404,7 @@ shinyServer(function(input, output) {
         )
       }
     })
-  
+
   # Reactive line graph of state by year
   output$state_line_edu <-
     renderPlotly({
@@ -364,7 +413,7 @@ shinyServer(function(input, output) {
       if (length(s)) {
         selected_state <- s$key
         # Filter by state
-        select_state_edumw <- 
+        select_state_edumw <-
           reactive({
             dplyr::filter(edu_min_wage, state == selected_state)
           })
@@ -373,23 +422,29 @@ shinyServer(function(input, output) {
           plot_ly(
             select_state_edumw(),
             x = ~year,
-            y = ~edu_div10, 
+            y = ~edu_div10,
             name = "% Completed High School",
             type = "scatter",
             mode = "lines",
             line = list(color = "#004080"),
             hoverinfo = "text",
-            hovertext = paste0(select_state_edumw()$year, ':\n', 
-                               "% Completed High School: ", 
-                               select_state_edumw()$at_least_hs_grad, "%")
+            hovertext = paste0(
+              select_state_edumw()$year, ":
+",
+              "% Completed High School: ",
+              select_state_edumw()$at_least_hs_grad, "%"
+            )
           ) %>%
             add_trace(
               y = ~High.2018,
               name = "Minimum Wage ($/hr)",
               line = list(color = "#008040"),
-              hovertext = paste0(select_state_edumw()$year, ':\n', "Minimum Wage: $", 
-                                 select_state_edumw()$High.2018, 
-                                 "/hr")
+              hovertext = paste0(
+                select_state_edumw()$year, ":
+", "Minimum Wage: $",
+                select_state_edumw()$High.2018,
+                "/hr"
+              )
             ) %>%
             add_trace(
               y = ~ratio,
@@ -400,8 +455,10 @@ shinyServer(function(input, output) {
             layout(
               xaxis = list(title = "Year"),
               yaxis = list(showticklabels = F, title = ""),
-              title = list(title = paste0("% Completed High School and Minimum Wage Over Time In ",
-                                          select_state_edumw()$state))
+              title = list(title = paste0(
+                "% Completed High School and Minimum Wage Over Time In ",
+                select_state_edumw()$state
+              ))
             )
         })()
       } else {

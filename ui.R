@@ -62,6 +62,18 @@ introduction <- tabPanel(
       href = "http://www.ucrdatatool.gov",
       "You can find a link to the homicide rates by clicking here."
     ),
+    tags$br(),
+    tags$br(),
+    tags$p(
+      "The obesity information was found from the Centers for Disease Control
+      and Prevention using BRFSS survey data. This data was also compared with
+      minimum wage in order to see if there is a correlation between minimum
+      wage and obesity rates."
+    ),
+    tags$a(
+      href = "https://www.cdc.gov/brfss/annual_data/annual_data.htm?fbclid=IwAR11N0Ewe9ALaCbbiqMl8oyNWauleK4YGe1Ao3RmgWRJU9w3TJk7CIaBO-c",
+      "The obesity rates information can be found by clicking here."
+    ),
     tags$h4(strong("Questions that can be asked", style = "color: #2C3E50;")),
     tags$p("The data set is 2,750 rows long and summarizes information by
             Year, State, Table Data, Footnote, High.Value (the higher of the
@@ -256,8 +268,10 @@ shiny_3d <- tabPanel(
         inputId = "target",
         label = h3("Select a State"),
         # Choices to select states
-        choices = append("None", append("All",
-          unique(minimum_wage$State))),
+        choices = append("None", append(
+          "All",
+          unique(minimum_wage$State)
+        )),
         selected = "All"
       )
     ),
@@ -396,12 +410,12 @@ edu_tab <-
     sidebarLayout(
       sidebarPanel(
         sliderInput(
-          "shiny_yr", 
-          label = h3("Select Year"), 
-          min = 2009, 
-          max = 2017, 
-          value = 2009, 
-          sep = "", 
+          "shiny_yr",
+          label = h3("Select Year"),
+          min = 2009,
+          max = 2017,
+          value = 2009,
+          sep = "",
           animate = TRUE
         )
       ),
@@ -439,14 +453,14 @@ edu_tab <-
           the \"play\" button on the side panel to automatically go through all the years."
         ),
         tags$h5(strong(em("Possible Questions You Could Ask About the Plot:",
-                          style = "color: #2C3E50;"
+          style = "color: #2C3E50;"
         ))),
         tags$ol(
           tags$li("What percent of Washingtonians completed less than 9th grade in 2017?"),
           tags$li("Which state/region has the highest educational attainment level?"),
           tags$li("How does the education attainment level change as the minimum wage
                   changes in Wyoming?")
-          ),
+        ),
         tags$h5(
           strong("Insights:", style = "color: #2a8e0e;")
         ),
@@ -467,7 +481,7 @@ Additionally,
     )
   )
 
-obese_tab <- 
+obese_tab <-
   tabPanel(
     "Obesity Rates",
     titlePanel(
@@ -476,12 +490,12 @@ obese_tab <-
     sidebarLayout(
       sidebarPanel(
         sliderInput(
-          "obese_yr", 
-          label = h3("Select Year"), 
-          min = 2009, 
-          max = 2017, 
-          value = 2009, 
-          sep = "", 
+          "obese_yr",
+          label = h3("Select Year"),
+          min = 2009,
+          max = 2017,
+          value = 2009,
+          sep = "",
           animate = TRUE
         )
       ),
@@ -513,7 +527,7 @@ obese_tab <-
           a positive trendline represents the opposite."
         ),
         tags$h5(strong(em("Possible Questions You Could Ask About the Plot:",
-                          style = "color: #2C3E50;"
+          style = "color: #2C3E50;"
         ))),
         tags$ol(
           tags$li("What ratio of Oregonians were overweight in 2017?"),
