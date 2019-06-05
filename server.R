@@ -98,27 +98,25 @@ shinyServer(function(input, output) {
       )
   })
 
-
+  ## Combine obesity data with minimum wage data
   final_data <- left_join(minimum_wage, all_data,
                           by = c("State" = "X", "Year" = "Year"))
   final_data <- final_data %>%
     select(State, Year, x.rfbmi2, High.2018)
-  names(final_data)[3] <- "Percentage"
+  names(final_data)[3] <- "Overweight Percentage"
   names(final_data)[4] <- "minimum Wage"
-  #    if(!is.null(input$target)) {
   reactive(final_data <- final_data[final_data$State %in% input$target, ])
-  #    }
-
-
+  
+  ## Render the 3D plot
   output$statee <- renderPlotly({
     plot_ly(final_data,
       x = ~Year, y = ~State, z = ~`minimum Wage`,
-      color = ~Percentage
+      color = ~`Overweight Percentage`
     ) %>%
     layout(title = "3D plot of Obesity/Overweight vs Year vs Minimum wage") %>%
       add_markers() %>%
       layout(scene = list(
-        xaxis = list(title = "Years (2001 --- 2017"),
+        xaxis = list(title = "Years (2001 --- 2017)"),
         yaxis = list(title = "States"),
         zaxis = list(title = "Minimum wage in state ($)")
       ))

@@ -238,34 +238,39 @@ shiny_3d <- tabPanel(
     ),
     mainPanel(
       tags$h4(strong("3D Plot"), align = "center"),
-      plotlyOutput("statee"), tags$p("UPDATE THIS: WHAT DOES THIS 3D plot SHOW?
-        These two plots demonstrate homicide rates over time per state as
-    well as those same homicide rates over time plotted against the minimum wage
-    adjusted for 2018 dollars of that state. For consistency, homicide rates
-    have been plotted on the Y-Axis. In the first plot, the year has been
-    plotted on the X-Axis. In the second plot, adjusted 2018 minimum wages have
-    been plotted on the X-Axis."),
+      plotlyOutput("statee"), tags$p("
+        The 3D plot demonstrate overweight rates and minimum wage over time per state from
+        2001 to 2017. For consistency, year have been plotted on the X-Axis. Minimum wage have
+        been plotted on the Z-Axis. States have been plotted on the Y-Axis. The overweight percentage
+        is represented by colors. The brighter the dot means the higher percentage in overweight rates."),
       tags$p(
-        strong("To use this map:"), "UPDATE THIS:Look at the side panel on the
-              top left side
-              of the page. You can select the state of interest with the",
-        strong("Select State"), "drop-down menu. Once you select the state,
-              the two plots will display
-              the information for the homicide rates of that state. Both plots
-      will automatically update for the requested state when selected."
+        strong("To use this map:"), "User can use mouse to rotate around the 3D plot. They can use
+                the mouse wheel to zoom in or zoom out. When the mouse points at a particular dot,
+                it will present the state name and other information.",
+        strong("Select State"), "CheckBox group. Look at the checkbox panel on the left side
+              of the page. User can decide to include some particular states or not."
       ),
       tags$h5(strong(em("Possible Questions You Could Ask About these Plots:",
         style = "color: #2C3E50;"
       ))),
       tags$ol(
-        tags$li("QUESTION 1"),
-        tags$li("QUESTION 2"),
-        tags$li("QUESTION 3")
+        tags$li("What is the overall tendency of obesity?"),
+        tags$li("Is the difference in minimum wage leading to the difference of obesity?"),
+        tags$li("Is there an obvious difference between Northern states and Southern states?")
       ),
       tags$h5(
         strong("Insights:", style = "color: #2a8e0e;")
       ),
-      tags$p("INSIGHT HERE - CHECK WHAT I'VE WRITTEN IN THE OTHER SECTIONS")
+      tags$p("Our 3D plot is based on the data from the Behavioral Risk 
+             Factor Surveillance System (BRFSS). From 2001 to 2017, BRFSS have given survey to
+             measure the obesity problem in the US. In general, most of the states are facing an
+             increasing overweight problem. Approximately, around sixty percent of the US citizens
+             are facing this public health problem. Particularly, West Virgina, Oklahoma, Alabama
+             and Arkansas have 70% of the population measured as overweight. This 3D plot also shows 
+             that there isn't a strong correlation between minimum wage and overweight. Base on all 
+             current information, even there isn't a strong relationship between minimum wage and
+             overweight percentage.The US is facing a serious overweight rates/obesity problem now. 
+             ")
     )
   )
 )
