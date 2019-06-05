@@ -160,5 +160,37 @@ obese_edu_plot <-
 
 obese_edu_plot
 
-write.csv(edu_df, "data/edu/all_edu.csv")
-write.csv(combined_df, "data/edu/combined_edu_obese.csv")
+obese_min_wage <- read.csv("data/obese_min_wage.csv", stringsAsFactors = F)
+
+obese_choro_yr <- filter(obese_min_wage, year == 2014)
+
+obese_choropleth <- 
+  plot_ly(
+    obese_choro_yr,
+    type = "choropleth",
+    key = ~ state,
+    z = ~ x.rfbmi5,
+    zmin = 0.5,
+    zmax = 0.75,
+    source = "obeseplot",
+    hoverinfo = "text",
+    text = paste0(
+      obese_choro_yr$state, ": \n", "Obesity Rate: ",
+      round(obese_choro_yr$x.rfbmi5, 3)
+    ),
+    locations = ~ Abbreviation,
+    locationmode = "USA-states",
+    color = ~ x.rfbmi5,
+    colors = rev(brewer.pal(9, "RdYlBu")),
+    colorbar = list(title = "Obesity Rate")
+  ) %>%
+  layout(
+    title = "Obesity Rate", # ui
+    geo = list(
+      scope = 'usa',
+      projection = list(type = 'albers usa'),
+      showlakes = F
+    )
+  )
+
+obese_choropleth

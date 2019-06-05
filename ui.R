@@ -354,7 +354,7 @@ edu_tab <-
   tabPanel(
     "Education Attainment",
     titlePanel(
-      "Educational Attainment by State and its Relation to Obesity"
+      "Educational Attainment by State and Relation to Minimum Wage"
     ),
     tags$hr(),
     tags$p("The data for this segment was collected using the FactFinder table
@@ -375,24 +375,27 @@ edu_tab <-
       mainPanel(
         plotlyOutput("edu_choropleth"),
         textOutput("selection"),
-        plotlyOutput("state_bar")
+        plotlyOutput("state_bar"),
+        tags$h3("Minimum Wage and Education Attainment vs Year"),
+        plotlyOutput("state_line_edu")
       )
-    ),
-    tags$hr(),
-    tags$hr(),
+    )
+  )
+
+obese_tab <- 
+  tabPanel(
+    "Obesity Rates",
     titlePanel(
-      "Educational Attainment in Relation to Obesity Rate"
+      "Obesity Rate by State and Relation to Minimum Wage"
     ),
     tags$hr(),
-    tags$p("This data was gathered from the U.S. Census Bureau like above and joined
-           with data from the CDC's BRFSS survey datasets."),
-    tags$p("An intersting observation is that even though the obesity rate is increasing
-           , the gap in education rate is closing at a faster rate, leading
-           to a less correlated result as the years go by."),
+    tags$p("The data for this segment was collected from CDC BRFSS surveys
+           in May 2019."),
+    tags$hr(),
     sidebarLayout(
       sidebarPanel(
         sliderInput(
-          "shiny_yr2", 
+          "obese_yr", 
           label = h3("Select Year"), 
           min = 2009, 
           max = 2017, 
@@ -402,10 +405,12 @@ edu_tab <-
         )
       ),
       mainPanel(
-        plotlyOutput("obese_edu")
+        plotlyOutput("obese_choro"),
+        textOutput("selection2"),
+        plotlyOutput("obese_line")
       )
     )
-    )
+  )
 
 shinyUI(navbarPage(
   # includeCSS("style.css"),
@@ -416,5 +421,6 @@ shinyUI(navbarPage(
   homicide_graph,
   shiny_3d,
   edu_tab,
+  obese_tab,
   about_us
 ))

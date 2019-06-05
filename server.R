@@ -129,6 +129,12 @@ shinyServer(function(input, output) {
   # Read education data
   edu_df <- read.csv("data/edu/all_edu.csv", stringsAsFactors = F)
   combined_df <- read.csv("data/edu/combined_edu_obese.csv", stringsAsFactors = F)
+  edu_min_wage <- read.csv("data/min_wage_and_edu.csv", stringsAsFactors = F) %>%
+    mutate(edu_div10 = at_least_hs_grad / 10,
+           ratio = at_least_hs_grad * 0.8 / High.2018)
+  obese_min_wage <- read.csv("data/obese_min_wage.csv", stringsAsFactors = F) %>%
+    mutate(minwage_div10 = High.2018 / 10,
+           ratio = High.2018 / (20 * x.rfbmi5))
   
   # Filter Education DF by Year
   select_choro_yr <- 
@@ -169,8 +175,115 @@ shinyServer(function(input, output) {
   })
   output$edu_choropleth = renderPlotly(edu_choro())
   
+  # Obesity Choropleth
+  obese_choro_yr <- 
+    reactive({
+      dplyr::filter(obese_min_wage, year == input$obese_yr)
+    })
+  
+  obese_choropleth <- 
+    reactive({
+      plot_ly(
+        obese_choro_yr(),
+        type = "choropleth",
+        key = ~ state,
+        z = ~ x.rfbmi5,
+        zmin = 0.5,
+        zmax = 0.75,
+        source = "obeseplot",
+        hoverinfo = "text",
+        text = paste0(
+          obese_choro_yr()$state, ": \n", "Obesity Rate: ",
+          round(obese_choro_yr()$x.rfbmi5, 3)
+        ),
+        locations = ~ Abbreviation,
+        locationmode = "USA-states",
+        color = ~ x.rfbmi5,
+        colors = rev(brewer.pal(9, "Spectral")),
+        colorbar = list(title = "Obesity Rate")
+      ) %>%
+      layout(
+        title = "Obesity Rate", # ui
+        geo = list(
+          scope = 'usa',
+          projection = list(type = 'albers usa'),
+          showlakes = F
+        )
+      )
+    })
+  
+  output$obese_choro <- renderPlotly(obese_choropleth())
+  
+  # Click reactive obese choro
+  
+  # Click selection for obese choro
+  output$selection2 <- renderPrint({
+    s <- event_data("plotly_click", source = "obeseplot")
+    if (length(s) == 0) {
+      cat("Click on a state to display a minimum wage - obesity rate graph\n",
+          "(double click to clear)")
+    } else {
+      cat("You selected: ", s$key)
+    }
+  })
+  
+  output$obese_line <- 
+    renderPlotly({
+      # Get state
+      s <- event_data("plotly_click", source = "obeseplot")
+      if (length(s)) {
+        selected_state <- s$key
+        # Filter by state
+        select_state_obese <- 
+          reactive({
+            dplyr::filter(obese_min_wage, state == selected_state)
+          })
+        # Make Plot
+        reactive({
+          plot_ly(
+            select_state_obese(),
+            x = ~year,
+            y = ~x.rfbmi5, 
+            name = "Obesity Rate",
+            type = "scatter",
+            mode = "lines",
+            line = list(color = "#004080"),
+            hoverinfo = "text",
+            hovertext = paste0(select_state_obese()$year, ':\n', 
+                               "% Completed High School: ", 
+                               select_state_obese()$x.rfbmi5, "%")
+          ) %>%
+            add_trace(
+              y = ~minwage_div10,
+              name = "Minimum Wage ($/hr)",
+              line = list(color = "#008040"),
+              hovertext = paste0(select_state_obese()$year, ':\n', "Minimum Wage: $", 
+                                 select_state_obese()$High.2018, 
+                                 "/hr")
+            ) %>%
+            add_trace(
+              y = ~ratio,
+              name = "Adjusted Ratio (Trendline)",
+              line = list(color = "#800040"),
+              hoverinfo = "none"
+            ) %>%
+            layout(
+              xaxis = list(title = "Year"),
+              yaxis = list(showticklabels = F, title = ""),
+              title = list(title = paste0("Obesity Rate and Minimum Wage Over Time In ",
+                                          select_state_obese()$state))
+            )
+        })()
+      } else {
+        plotly_empty(
+          type = "scatter"
+        )
+      }
+    })
+  
   # Reactive proportion bar by state and year
   
+  # Click selection for edu attainment choro
   output$selection <- renderPrint({
     s <- event_data("plotly_click", source = "stateplot")
     if (length(s) == 0) {
@@ -243,44 +356,58 @@ shinyServer(function(input, output) {
       }
     })
   
-  # Scatter plot of obesity vs percent > high school (omit DC)
-  
-  # Select Year
-  select_combined_yr <- 
-    reactive({
-      dplyr::filter(combined_df, year == input$shiny_yr2, geo_id2 != 11) %>% 
-        na.omit()
-    })
-  
-  # Find Linear Regression Coefficient
-  linear_coeff <- reactive({round(
-    cor(select_combined_yr()$x.rfbmi5, select_combined_yr()$at_least_hs_grad), 3)})
-  
-  obese_edu_plot <- reactive({
-    plot_ly(select_combined_yr(),
-            x = ~x.rfbmi5,
-            y = ~at_least_hs_grad,
+  # Reactive line graph of state by year
+  output$state_line_edu <-
+    renderPlotly({
+      # Get state
+      s <- event_data("plotly_click", source = "stateplot")
+      if (length(s)) {
+        selected_state <- s$key
+        # Filter by state
+        select_state_edumw <- 
+          reactive({
+            dplyr::filter(edu_min_wage, state == selected_state)
+          })
+        # Make Plot
+        reactive({
+          plot_ly(
+            select_state_edumw(),
+            x = ~year,
+            y = ~edu_div10, 
+            name = "% Completed High School",
             type = "scatter",
-            mode = "markers",
-            hovertext = paste0(select_combined_yr()$state, ": ", '\n',
-                               "Percent Completed At Least High School: ", 
-                               select_combined_yr()$at_least_hs_grad, "%", '\n',
-                               "Obesity Rate: ", round(select_combined_yr()$x.rfbmi5, 3)),
+            mode = "lines",
+            line = list(color = "#004080"),
             hoverinfo = "text",
-            marker = list(size = 10,
-                          color = 'rgba(51, 102, 204, .9)',
-                          line = list(color = 'rgba(0, 0, 102, .8)',
-                                      width = 2))) %>%
-      layout(xaxis = list(title="Obesity Rate"),
-             yaxis = list(title="% Completed At Least High School"),
-             title = paste0("% Completed At Least High School vs Obesity Rate in ",
-                            select_combined_yr()$year),
-             annotations = list(text = paste0("r = ", linear_coeff()),
-                                showarrow = F,
-                                font = list(color = 'rgba(51, 102, 156, 1)'),
-                                x = 0.585,
-                                y = 80))
-  })
-  
-  output$obese_edu = renderPlotly(obese_edu_plot())
+            hovertext = paste0(select_state_edumw()$year, ':\n', 
+                               "% Completed High School: ", 
+                               select_state_edumw()$at_least_hs_grad, "%")
+          ) %>%
+            add_trace(
+              y = ~High.2018,
+              name = "Minimum Wage ($/hr)",
+              line = list(color = "#008040"),
+              hovertext = paste0(select_state_edumw()$year, ':\n', "Minimum Wage: $", 
+                                 select_state_edumw()$High.2018, 
+                                 "/hr")
+            ) %>%
+            add_trace(
+              y = ~ratio,
+              name = "Adjusted Ratio (Trendline)",
+              line = list(color = "#800040"),
+              hoverinfo = "none"
+            ) %>%
+            layout(
+              xaxis = list(title = "Year"),
+              yaxis = list(showticklabels = F, title = ""),
+              title = list(title = paste0("% Completed High School and Minimum Wage Over Time In ",
+                                          select_state_edumw()$state))
+            )
+        })()
+      } else {
+        plotly_empty(
+          type = "scatter"
+        )
+      }
+    })
 })
