@@ -110,7 +110,6 @@ shinyServer(function(input, output) {
   
   ## Render the 3D plot
   output$statee <- renderPlotly({
-<<<<<<< HEAD
     plot_ly(final_data,
       x = ~Year, y = ~State, z = ~`minimum Wage`,
       color = ~`Overweight Percentage`
@@ -122,7 +121,6 @@ shinyServer(function(input, output) {
         yaxis = list(title = "States"),
         zaxis = list(title = "Minimum wage in state ($)")
       ))
-=======
     return(maker(input$target))
   })
   
@@ -282,7 +280,6 @@ shinyServer(function(input, output) {
                                 font = list(color = 'rgba(51, 102, 156, 1)'),
                                 x = 0.585,
                                 y = 80))
->>>>>>> refs/remotes/origin/master
   })
   
   output$obese_edu = renderPlotly(obese_edu_plot())
