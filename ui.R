@@ -2,7 +2,8 @@ introduction <- tabPanel(
   "Introduction",
   mainPanel(
     tags$h4(strong("Information about Minimum Wages",
-                   style = "color: #2C3E50;")),
+      style = "color: #2C3E50;"
+    )),
     tags$h6(em("June 5th, 2019")),
     tags$p("The minimum wage in the United States is set by both US and
            State laws and since July 24, 2009, the minimum wage has been
@@ -10,7 +11,7 @@ introduction <- tabPanel(
            been experimenting with setting higher minimum wages.
            Financially, proponents of
            higher minimum wages believe it will raise worker productivity,
-           reduce turnover, reduce absenteeism, and stimulate the economy. 
+           reduce turnover, reduce absenteeism, and stimulate the economy.
            Meanwhile, those against raising minimum wages believe that
            raising minimum wages would force businesses to lay off
            employees, raise unemployment levels, increase poverty, and
@@ -60,18 +61,18 @@ introduction <- tabPanel(
     ),
     tags$h4(strong("Structure", style = "color: #2C3E50;")),
     tags$p("The first tab of this report shows has a
-            choropleth map of the minimum wage in each state. 
+            choropleth map of the minimum wage in each state.
             Users can change the year
             input to see how minimum wages vary in each
             state from 1968 to 2017.
             The second page shows homicide rates graphed by year as well as a
-            plot of 
+            plot of
             homicide rates graphed by minimum wages.
             Users can select the state
             and see how the homicide rate for that state over time as well as
             how the minimum wage in 2018 dollars is correlated with homicide
             rates.
-            The third plot is a 3D plot that 
+            The third plot is a 3D plot that
             that looks at obesity/overweight statistics and the minimum wage
             plotted against time from 2001 - 2017.
            Users can select which state(s) they want to analyze and see general
@@ -87,17 +88,19 @@ introduction <- tabPanel(
 )
 
 plotly_wage <- tabPanel(
-    "Minimum Wage Map",
-    titlePanel("Minimum Wage Choropleth by State and Year"),
-    sidebarLayout(
-        sidebarPanel(
-            sliderInput("year_slider", label = h3("Select Year"), min = 1968, 
-                        max = 2017, value = 2017, sep = "", animate = TRUE)
-        ),
-        mainPanel(
-          tags$h4(strong("Minimum Wage Choropleth "), align = "center"),
-            plotlyOutput("plotlymap"),
-          tags$p("This choropleth shows the minimum wage for each state in the
+  "Minimum Wage Map",
+  titlePanel("Minimum Wage Choropleth by State and Year"),
+  sidebarLayout(
+    sidebarPanel(
+      sliderInput("year_slider",
+        label = h3("Select Year"), min = 1968,
+        max = 2017, value = 2017, sep = "", animate = TRUE
+      )
+    ),
+    mainPanel(
+      tags$h4(strong("Minimum Wage Choropleth "), align = "center"),
+      plotlyOutput("plotlymap"),
+      tags$p("This choropleth shows the minimum wage for each state in the
           United States from 1968-2017. Each state is graphed on this plot
           including Alaska and Hawaii. Keep in mind that some states do not
           have an official minimum wage or have state minimum wages
@@ -108,11 +111,11 @@ plotly_wage <- tabPanel(
           the federal level as the employees are being paid the federal level
           anyways, and updating the wage would be an inefficient use of
                  resources."),
-          tags$p(
-            strong("To use this map:"), "Look at the side panel on the
+      tags$p(
+        strong("To use this map:"), "Look at the side panel on the
               top left side
               of the page. You can select the year of interest with the",
-            strong("Select Year"), "slider. Once you select the year,
+        strong("Select Year"), "slider. Once you select the year,
               the choropleth will display
               the information for the minimum wage of that year. Upon hovering
             over each state, detailed information will be shown including the
@@ -120,21 +123,21 @@ plotly_wage <- tabPanel(
             and the Low.Value adjusted for 2018 dollars. You can also
             press the play button located in the bottom right of the Select Year
             slider to have the plot automatically progress through each year."
-          ),
-          tags$h5(strong(em("Possible Questions You Could Ask About the Plot:",
-                            style = "color: #2C3E50;"
-          ))),
-          tags$ol(
-            tags$li("Which state has the highest minimum wage in 2017?"),
-            tags$li("When did states begin to enact their own minimum wages
+      ),
+      tags$h5(strong(em("Possible Questions You Could Ask About the Plot:",
+        style = "color: #2C3E50;"
+      ))),
+      tags$ol(
+        tags$li("Which state has the highest minimum wage in 2017?"),
+        tags$li("When did states begin to enact their own minimum wages
                     different from federal levels?"),
-            tags$li("How have specific minimum wage values changed over time
+        tags$li("How have specific minimum wage values changed over time
                     to match with inflation?")
-          ),
-          tags$h5(
-            strong("Insights:", style = "color: #2a8e0e;")
-          ),
-          tags$p("Generally, most of the states have the same minimum wage as
+      ),
+      tags$h5(
+        strong("Insights:", style = "color: #2a8e0e;")
+      ),
+      tags$p("Generally, most of the states have the same minimum wage as
                  set by the federal level from 1968 to about the late 1990s.
                  However, once the 2000s come, we see more segmentation in
                  states and their minimum wage. Interestingly, Alaska seems to
@@ -146,52 +149,58 @@ plotly_wage <- tabPanel(
                  wage. Surprisingly, in 1985, the federal minimum wage was only
                  $3.35, which speaks to how inflation has changed this wage over
                  time.")
-        )    
-))
+    )
+  )
+)
 
 homicide_graph <- tabPanel(
-    "Homicide",
-    titlePanel("Homicide Rates Graphed by State and Year"),
-    sidebarLayout(
-      sidebarPanel(
-        selectizeInput("state_text_name", "Select State",
-                    state_list
-        )),
-    mainPanel(tags$h4(strong("Homicide Rate Plot"), align = "center"),
-              div(class = "span6", plotlyOutput("homicide_graph")),
-              tags$h4(strong("Homicide vs Minimum Wage Plot"), 
-                      align = "center"),
-              div(class = "span6", plotlyOutput("p_hom_wage")),
-    tags$p("These two plots demonstrate homicide rates over time per state as
+  "Homicide",
+  titlePanel("Homicide Rates Graphed by State and Year"),
+  sidebarLayout(
+    sidebarPanel(
+      selectizeInput(
+        "state_text_name", "Select State",
+        state_list
+      )
+    ),
+    mainPanel(
+      tags$h4(strong("Homicide Rate Plot"), align = "center"),
+      div(class = "span6", plotlyOutput("homicide_graph")),
+      tags$h4(strong("Homicide vs Minimum Wage Plot"),
+        align = "center"
+      ),
+      div(class = "span6", plotlyOutput("p_hom_wage")),
+      tags$p("These two plots demonstrate homicide rates over time per state as
     well as those same homicide rates over time plotted against the minimum wage
     adjusted for 2018 dollars of that state. For consistency, homicide rates
     have been plotted on the Y-Axis. In the first plot, the year has been
     plotted on the X-Axis. In the second plot, adjusted 2018 minimum wages have
     been plotted on the X-Axis."),
-    tags$p(
-      strong("To use this map:"), "Look at the side panel on the
+      tags$p(
+        strong("To use this map:"), "Look at the side panel on the
               top left side
               of the page. You can select the state of interest with the",
-      strong("Select State"), "drop-down menu. Once you select the state,
+        strong("Select State"), "drop-down menu. Once you select the state,
               the two plots will display
               the information for the homicide rates of that state. Both plots
       will automatically update for the requested state when selected."
-    ),
-    tags$h5(strong(em("Possible Questions You Could Ask About these Plots:",
-                      style = "color: #2C3E50;"
-    ))),
-    tags$ol(
-      tags$li("Which year had the highest homicide rates for X State?"),
-      tags$li("Is there a strong correlation between adjusted minimum wages
+      ),
+      tags$h5(strong(em("Possible Questions You Could Ask About these Plots:",
+        style = "color: #2C3E50;"
+      ))),
+      tags$ol(
+        tags$li("Which year had the highest homicide rates for X State?"),
+        tags$li("Is there a strong correlation between adjusted minimum wages
               and the homicide rate? How does this correlation change
               between states?"),
-      tags$li("Why is the Homicide vs. Minimum Wage plot considerably messier
+        tags$li("Why is the Homicide vs. Minimum Wage plot considerably messier
               than the Homicide Rate Plot? What might this suggest?")
-    ),
-    tags$h5(
-      strong("Insights:", style = "color: #2a8e0e;")
-    ),
-    tags$p("Each state often paints a starkly different picture when it comes to
+      ),
+      tags$h5(
+        strong("Insights:", style = "color: #2a8e0e;")
+      ),
+      tags$p("Each state often paints a starkly different
+      picture when it comes to
            how homicide rates have changed throughout the years. While states
            like South Carolina and Washington have similar trend lines where
            they sharply rise until about 1993, and then begin to decline, states
@@ -209,74 +218,64 @@ homicide_graph <- tabPanel(
            state paints a rather fascinating picture of their homicide and
            minimum wage, and instead of looking at the plots as a whole, it
            might be more useful to compare states to states.")
-    
     )
-    )
+  )
 )
-# homicide_wage <- tabPanel(
-#   "Homicide and Wage",
-#   titlePanel("Homicide Rates and Minimum Wage Graphed Together"),
-#   sidebarLayout(
-#     selectizeInput("state_hom_wage", "Select State",
-#                    state_list
-#     ),
-#     mainPanel(
-#       plotlyOutput("p_hom_wage")
-#     )
-#   ))
 
 ### Creating 3d Plot tabPanel
 shiny_3d <- tabPanel(
-    "Obesity and Minimum Wages",
-    titlePanel(h1("Obesity/Overweight Percentages and Minimum Wage")),
-    sidebarLayout(
-      sidebarPanel(
-        checkboxGroupInput(
-          inputId = "target",
-          label = h3("Select a State"),
-          # Choices to select states
-          choices = unique(minimum_wage$State),
-          selected = unique(minimum_wage$State)
-        )
-      ),
-      mainPanel(tags$h4(strong("3D Plot"), align = "center"),
-        plotlyOutput("statee"),tags$p("UPDATE THIS: WHAT DOES THIS 3D plot SHOW?
+  "Obesity and Minimum Wages",
+  titlePanel(h1("Obesity/Overweight Percentages and Minimum Wage")),
+  sidebarLayout(
+    sidebarPanel(
+      checkboxGroupInput(
+        inputId = "target",
+        label = h3("Select a State"),
+        # Choices to select states
+        choices = unique(minimum_wage$State),
+        selected = unique(minimum_wage$State)
+      )
+    ),
+    mainPanel(
+      tags$h4(strong("3D Plot"), align = "center"),
+      plotlyOutput("statee"), tags$p("UPDATE THIS: WHAT DOES THIS 3D plot SHOW?
         These two plots demonstrate homicide rates over time per state as
     well as those same homicide rates over time plotted against the minimum wage
     adjusted for 2018 dollars of that state. For consistency, homicide rates
     have been plotted on the Y-Axis. In the first plot, the year has been
     plotted on the X-Axis. In the second plot, adjusted 2018 minimum wages have
     been plotted on the X-Axis."),
-        tags$p(
-          strong("To use this map:"), "UPDATE THIS:Look at the side panel on the
+      tags$p(
+        strong("To use this map:"), "UPDATE THIS:Look at the side panel on the
               top left side
               of the page. You can select the state of interest with the",
-          strong("Select State"), "drop-down menu. Once you select the state,
+        strong("Select State"), "drop-down menu. Once you select the state,
               the two plots will display
               the information for the homicide rates of that state. Both plots
       will automatically update for the requested state when selected."
-        ),
-        tags$h5(strong(em("Possible Questions You Could Ask About these Plots:",
-                          style = "color: #2C3E50;"
-        ))),
-        tags$ol(
-          tags$li("QUESTION 1"),
-          tags$li("QUESTION 2"),
-          tags$li("QUESTION 3")
-        ),
-        tags$h5(
-          strong("Insights:", style = "color: #2a8e0e;")
-        ),
-        tags$p("INSIGHT HERE - CHECK WHAT I'VE WRITTEN IN THE OTHER SECTIONS"))
+      ),
+      tags$h5(strong(em("Possible Questions You Could Ask About these Plots:",
+        style = "color: #2C3E50;"
+      ))),
+      tags$ol(
+        tags$li("QUESTION 1"),
+        tags$li("QUESTION 2"),
+        tags$li("QUESTION 3")
+      ),
+      tags$h5(
+        strong("Insights:", style = "color: #2a8e0e;")
+      ),
+      tags$p("INSIGHT HERE - CHECK WHAT I'VE WRITTEN IN THE OTHER SECTIONS")
     )
   )
+)
 
 ### About Us tabPanel
 about_us <- tabPanel(
   "Meet the Team",
   headerPanel(
     h4("About Us",
-       style = "font-family: 'Arial';cursive;
+      style = "font-family: 'Arial';cursive;
          font-size: 25px; line-height: 1.0:
          color: #36454f;
          text-align: center;
@@ -285,11 +284,11 @@ about_us <- tabPanel(
   ),
   tags$h4("This project was created by a team of four students in INFO 478
             at the University of Washington. It was created by",
-          strong("Steven Hsieh,
+    strong("Steven Hsieh,
         Jerry Lin,
         Steve Ma,
         and Weixing Nie."),
-          align = "center"
+    align = "center"
   ),
   sidebarPanel(
     tags$h4(strong("Steven Hsieh"), align = "middle"),
@@ -335,7 +334,7 @@ about_us <- tabPanel(
     ),
     tags$p("Oliver Nie/Weixing Nie is currently an undergraduate student of UW.
            He is interested in data science, which is a reason why he wishes
-           to study informatics. Weixing believes in the power of data science 
+           to study informatics. Weixing believes in the power of data science
            to correct contemporary mistakes of human beings. His dream job is to
            become a video game director, and he truly wants to develop a game
            that can be recognized as the candidate for Nobel Literature Prize.
@@ -345,14 +344,12 @@ about_us <- tabPanel(
 )
 
 shinyUI(navbarPage(
-    # includeCSS("style.css"),
-    theme = shinytheme("flatly"),
-    "An Analysis of Minimum Wage",
-    introduction,
-    plotly_wage,
-    homicide_graph,
-    shiny_3d,
-    about_us
+  # includeCSS("style.css"),
+  theme = shinytheme("flatly"),
+  "An Analysis of Minimum Wage",
+  introduction,
+  plotly_wage,
+  homicide_graph,
+  shiny_3d,
+  about_us
 ))
-
-

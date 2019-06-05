@@ -13,8 +13,6 @@ shinyServer(function(input, output) {
     ))
     # Changing full State names to just their abbreviation
     data_select$StateAbb <- state.abb[match(data_select$State, state.name)]
-    # Giving state boundaries a white border
-    l <- list(color = toRGB("white"), width = 2)
     # Specify map projection options
     g <- list(
       scope = "usa",
@@ -52,8 +50,10 @@ shinyServer(function(input, output) {
 
   output$homicide_graph <- renderPlotly({
     # Creating Plotly for Homicide
-    plot_ly(data = homicide_select(),
-            type = "scatter", x = ~Year, y = ~value) %>%
+    plot_ly(
+      data = homicide_select(),
+      type = "scatter", x = ~Year, y = ~value
+    ) %>%
       layout(
         title = paste0(
           "Homicide Rates per 100,000 people in ",
@@ -99,7 +99,8 @@ shinyServer(function(input, output) {
   })
 
 
-  final_data <- left_join(minimum_wage, all_data, by = c("State" = "X", "Year" = "Year"))
+  final_data <- left_join(minimum_wage, all_data,
+                          by = c("State" = "X", "Year" = "Year"))
   final_data <- final_data %>%
     select(State, Year, x.rfbmi2, High.2018)
   names(final_data)[3] <- "Percentage"
@@ -107,14 +108,19 @@ shinyServer(function(input, output) {
   #    if(!is.null(input$target)) {
   reactive(final_data <- final_data[final_data$State %in% input$target, ])
   #    }
-  
-  
+
+
   output$statee <- renderPlotly({
-    plot_ly(final_data, x = ~Year, y = ~State, z = ~`minimum Wage`, color = ~Percentage) %>%
-      layout(title = "3D plot of Obesity and overweight VS Year VS Minimum wage") %>%
+    plot_ly(final_data,
+      x = ~Year, y = ~State, z = ~`minimum Wage`,
+      color = ~Percentage
+    ) %>%
+    layout(title = "3D plot of Obesity/Overweight vs Year vs Minimum wage") %>%
       add_markers() %>%
-      layout(scene = list(xaxis = list(title = 'Years (2001 --- 2017'),
-                          yaxis = list(title = 'States'),
-                          zaxis = list(title = 'Minimum wage in state ($)')))
+      layout(scene = list(
+        xaxis = list(title = "Years (2001 --- 2017"),
+        yaxis = list(title = "States"),
+        zaxis = list(title = "Minimum wage in state ($)")
+      ))
   })
-}) 
+})
