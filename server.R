@@ -99,10 +99,7 @@ shinyServer(function(input, output) {
   })
 
 
-  final_data <- left_join(minimum_wage, all_data,
-    by =
-      c("State" = "X", "Year" = "Year")
-  )
+  final_data <- left_join(minimum_wage, all_data, by = c("State" = "X", "Year" = "Year"))
   final_data <- final_data %>%
     select(State, Year, x.rfbmi2, High.2018)
   names(final_data)[3] <- "Percentage"
@@ -110,19 +107,14 @@ shinyServer(function(input, output) {
   #    if(!is.null(input$target)) {
   reactive(final_data <- final_data[final_data$State %in% input$target, ])
   #    }
-
-
+  
+  
   output$statee <- renderPlotly({
-    plot_ly(final_data,
-      x = ~Year, y = ~State,
-      z = ~`minimum Wage`, color = ~Percentage
-    ) %>%
-      layout(title = "3D plot of Obesity Rates vs Year vs Minimum Wage") %>%
+    plot_ly(final_data, x = ~Year, y = ~State, z = ~`minimum Wage`, color = ~Percentage) %>%
+      layout(title = "3D plot of Obesity and overweight VS Year VS Minimum wage") %>%
       add_markers() %>%
-      layout(scene = list(
-        xaxis = list(title = "Years (2001 --- 2017)"),
-        yaxis = list(title = "States"),
-        zaxis = list(title = "Minimum wage in state ($)")
-      ))
+      layout(scene = list(xaxis = list(title = 'Years (2001 --- 2017'),
+                          yaxis = list(title = 'States'),
+                          zaxis = list(title = 'Minimum wage in state ($)')))
   })
-})
+}) 

@@ -234,6 +234,7 @@ shiny_3d <- tabPanel(
         checkboxGroupInput(
           inputId = "target",
           label = h3("Select a State"),
+          # Choices to select states
           choices = unique(minimum_wage$State),
           selected = unique(minimum_wage$State)
         )
