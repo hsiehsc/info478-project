@@ -356,10 +356,6 @@ edu_tab <-
     titlePanel(
       "Educational Attainment by State and Relation to Minimum Wage"
     ),
-    tags$hr(),
-    tags$p("The data for this segment was collected using the FactFinder table
-           creation tool from the U.S. Census Bureau website in May 2019."),
-    tags$hr(),
     sidebarLayout(
       sidebarPanel(
         sliderInput(
@@ -373,11 +369,63 @@ edu_tab <-
         )
       ),
       mainPanel(
+        tags$h4(strong("Minimum Wage Choropleth "), align = "center"),
         plotlyOutput("edu_choropleth"),
         textOutput("selection"),
         plotlyOutput("state_bar"),
-        tags$h3("Minimum Wage and Education Attainment vs Year"),
-        plotlyOutput("state_line_edu")
+        tags$h4(strong("Minimum Wage and Education Attainment vs Year")),
+        plotlyOutput("state_line_edu"),
+        tags$hr(),
+        tags$p("This choropleth map displays the percentage of the population over age 25
+               from the state that completed at least high school between the years
+               2009 and 2017, which we are using to represent the level of education attainment in a state.  
+               Upon click, a more detailed breakdown of educational
+               attainment by state and year as well as a line graph detailing the
+               relationship between minimum wage levels and education attainment 
+               over time will be generated.  The data for these plots was gathered
+               from the U.S. Census Bureau as well as the U.S Department of Labor
+               by proxy of kaggle.com in May 2019."),
+        tags$p(
+          strong("To use this map:"), "Look at the side panel on the
+          top left side
+          of the page. You can select the year of interest with the",
+          strong("Select Year"), "slider. Once you select the year,
+          the choropleth will display data for the percentage of state population above
+          the age of 25 that completed at least high school.  Hover over a state to view
+          exact percentages and click on a state to generate a more detailed proportional
+          plot of educational attainment by state and a graph modeling the relationship
+          between minimum wage and educational attainment over time (double-click to clear,
+          hover for more information).  For the minimum 
+          wage vs. educational attainment graph, a linear or positive trendline represents a roughly
+          linear relationship between minimum wage and educational attainment,
+          a positive trendline represents an inverse relationship.  You can also press
+          the \"play\" button on the side panel to automatically go through all the years."
+        ),
+        tags$h5(strong(em("Possible Questions You Could Ask About the Plot:",
+                          style = "color: #2C3E50;"
+        ))),
+        tags$ol(
+          tags$li("What percent of Washingtonians completed less than 9th grade in 2017?"),
+          tags$li("Which state/region has the highest educational attainment level?"),
+          tags$li("How does the education attainment level change as the minimum wage
+                  changes in Wyoming?")
+          ),
+        tags$h5(
+          strong("Insights:", style = "color: #2a8e0e;")
+        ),
+        tags$p("Something interesting is that there seems to be a distinctive north/south
+               divide in education attainment.  It seems that across the board,
+               states in the south have education attainment levels around 6-10% lower
+               than those in the north which is a interesting phenomenon.  
+An interesting observation that can be made from the plot is that apart from the 
+District of Columbia, the state with the percentage of denizens with graduate degrees
+is Massachusetts at 16.1% which means that almost 1 in 6 people have a graduate degree.  Perhaps 
+one could posit that this has something to do with the sheer number of
+prestigious institutions of education in that state but that number is quite something.
+Additionally,
+               we see that it's hard to determine if there's any real relationship between
+               minimum wage and education attainment.  For every state, education attainment
+               increases regardless of what is happening to the minimum wage.")
       )
     )
   )
@@ -388,10 +436,6 @@ obese_tab <-
     titlePanel(
       "Obesity Rate by State and Relation to Minimum Wage"
     ),
-    tags$hr(),
-    tags$p("The data for this segment was collected from CDC BRFSS surveys
-           in May 2019."),
-    tags$hr(),
     sidebarLayout(
       sidebarPanel(
         sliderInput(
@@ -405,9 +449,50 @@ obese_tab <-
         )
       ),
       mainPanel(
+        tags$h4(strong("Obesity/Overweight Ratio Choropleth "), align = "center"),
         plotlyOutput("obese_choro"),
         textOutput("selection2"),
-        plotlyOutput("obese_line")
+        plotlyOutput("obese_line"),
+        tags$hr(),
+        tags$p("This choropleth map displays the ratio of the population from each state
+               that were deemed overweight or obese from the years 2009 to 2017.  The graph
+               generated on click is of this ratio versus the minimum wage over the same 
+               years.  The data for these plots were sourced from CDC BRFSS surveys and
+               from the U.S. Department of Labor by proxy of kaggle.com.  States in white
+               are missing data."),
+        tags$p(
+          strong("To use this map:"), "Look at the side panel on the
+          top left side
+          of the page. You can select the year of interest with the",
+          strong("Select Year"), "slider. Once you select the year,
+          the choropleth will display data for the ratio of state population considered
+          to be at least overweight.  Hover over a state to view
+          exact percentages ratios and click on a state to generate a graph modeling the relationship
+          between minimum wage and overweight ratio over time (double click to clear,
+          you can also hover and view exact minimum wage and overweight ratio numbers).  For the minimum 
+          wage vs. overweight rate graph, a linear or positive trendline represents a roughly
+          relationship between minimum wage and overweight ratio such that as minimum wage increases,
+          overweight ratio decreases, and
+          a positive trendline represents the opposite."
+        ),
+        tags$h5(strong(em("Possible Questions You Could Ask About the Plot:",
+                          style = "color: #2C3E50;"
+        ))),
+        tags$ol(
+          tags$li("What ratio of Oregonians were overweight in 2017?"),
+          tags$li("Which state/region has the highest rate of obesity/overweight-ness?"),
+          tags$li("How does the overweight ratio in Kansas change as the minimum wage
+                  changes?")
+        ),
+        tags$h5(
+          strong("Insights:", style = "color: #2a8e0e;")
+        ),
+        tags$p("The Midwest and South have distinctively greater rates of obesity than
+               the states west of the Rockies and New England.  It can be noted that in
+               2017, the top 10 states are all in this subset and that 7 of them border
+               each other (TX, OK, LO, MS, TN, KY, WV).  It can also be noted that
+               in every state, the ratio of the population considered to be overweight
+               has risen between 2009 and 2017 by around 2-3% on average.")
       )
     )
   )
