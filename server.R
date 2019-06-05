@@ -1,3 +1,4 @@
+source("maker.R")
 shinyServer(function(input, output) {
   ### plotly choropleth ####
   output$plotlymap <- renderPlotly({
@@ -111,17 +112,7 @@ shinyServer(function(input, output) {
 
 
   output$statee <- renderPlotly({
-    plot_ly(final_data,
-      x = ~Year, y = ~State, z = ~`minimum Wage`,
-      color = ~Percentage
-    ) %>%
-    layout(title = "3D plot of Obesity/Overweight vs Year vs Minimum wage") %>%
-      add_markers() %>%
-      layout(scene = list(
-        xaxis = list(title = "Years (2001 --- 2017"),
-        yaxis = list(title = "States"),
-        zaxis = list(title = "Minimum wage in state ($)")
-      ))
+    return(maker(input$target))
   })
   
   ##### EDUCATION ATTAINMENT ##### 
