@@ -240,16 +240,27 @@ shiny_3d <- tabPanel(
     mainPanel(
       tags$h4(strong("3D Plot"), align = "center"),
       plotlyOutput("statee"), tags$p("
-        The 3D plot demonstrate overweight rates and minimum wage over time per state from
-        2001 to 2017. For consistency, year have been plotted on the X-Axis. Minimum wage have
-        been plotted on the Z-Axis. States have been plotted on the Y-Axis. The overweight percentage
-        is represented by colors. The brighter the dot means the higher percentage in overweight rates."),
+        This 3D plot demonstrates overweight rates vs minimum wage over time per
+        state from
+        2001 to 2017. The data is from the Behavioral Risk Factor Surveillance
+        System (BRFSS). From 2001 to 2017, the BRFSS has given surveys to
+        measure the obesity problem in the US.
+        For consistency, the year have been plotted on the X-Axis,
+        minimum wage have
+        been plotted on the Z-Axis, and states have been plotted on the Y-Axis.
+        The overweight percentage
+        is represented by colors. The brighter the dot means the higher
+        percentage in overweight rates. Note: The ratio presented on the color
+        bar is out of 1. For example, 0.7 means 70% of the population is
+                                     either overweight or obese."),
       tags$p(
-        strong("To use this map:"), "User can use mouse to rotate around the 3D plot. They can use
-                the mouse wheel to zoom in or zoom out. When the mouse points at a particular dot,
-                it will present the state name and other information.",
-        strong("Select State"), "CheckBox group. Look at the checkbox panel on the left side
-              of the page. User can decide to include some particular states or not."
+        strong("To use this map:"), "To use this map, look at the side panel on
+        the left. In the", strong("Select a State"), "input box, users can
+        select the state(s) that they want to display in the 3d plot. Users can
+        then use their mouse to rotate around the 3D plot. The mouse wheel
+        allows for the ability to zoom in or zoom out. When the
+        mouse points at a particular dot, it will present the state name and
+        other relevant information."
       ),
       tags$h5(strong(em("Possible Questions You Could Ask About these Plots:",
         style = "color: #2C3E50;"
@@ -262,16 +273,18 @@ shiny_3d <- tabPanel(
       tags$h5(
         strong("Insights:", style = "color: #2a8e0e;")
       ),
-      tags$p("Our 3D plot is based on the data from the Behavioral Risk 
-             Factor Surveillance System (BRFSS). From 2001 to 2017, BRFSS have given survey to
-             measure the obesity problem in the US. In general, most of the states are facing an
-             increasing overweight problem. Approximately, around sixty percent of the US citizens
-             are facing this public health problem. Particularly, West Virgina, Oklahoma, Alabama
-             and Arkansas have 70% of the population measured as overweight. This 3D plot also shows 
-             that there isn't a strong correlation between minimum wage and overweight. Base on all 
-             current information, even there isn't a strong relationship between minimum wage and
-             overweight percentage.The US is facing a serious overweight rates/obesity problem now. 
-             ")
+      tags$p("In general,
+             most of the states are facing an increasing overweight problem.
+             Approximately, around sixty percent of the US citizens
+             are facing this public health problem. Particularly, West Virgina,
+             Oklahoma, Alabama and Arkansas have 70% of the population measured
+             as overweight. This 3D plot also shows that there isn't a strong
+             correlation between minimum wage and overweight percentages.
+             Based on all 
+             current information, even there isn't a strong relationship
+             between minimum wage and
+             overweight percentage, it is evident that the US is currently
+             facing a serious obesity problem.")
     )
   )
 )

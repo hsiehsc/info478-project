@@ -18,12 +18,12 @@ maker <- function(target) {
   
   final_data <- final_data %>%
     select(State, Year, x.rfbmi2, High.2018)
-  names(final_data)[3] <- "Percentage"
+  names(final_data)[3] <- "Ratio"
   names(final_data)[4] <- "minimum Wage"
   
   
   minimum_year_overweight_obesity_plot <- plot_ly(final_data, x = ~Year, y = ~State, 
-                                                  z = ~`minimum Wage`, color = ~Percentage) %>%
+                                                  z = ~`minimum Wage`, color = ~Ratio) %>%
     layout(title = "3D plot of Obesity and overweight VS Year VS Minimum wage") %>%
     add_markers() %>%
     layout(scene = list(xaxis = list(title = 'Years (2001 --- 2017'),
