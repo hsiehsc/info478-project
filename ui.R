@@ -27,7 +27,7 @@ introduction <- tabPanel(
            project hopes to open up a conversation regarding minimum wage
            and encourage conversation into what other topics might be worth
            looking into. "),
-    tags$h4(strong("Information about the Dataset", style = "color: #2C3E50;")),
+    tags$h4(strong("Information about the Datasets", style = "color: #2C3E50;")),
     tags$p(
       "The information was collected by",
       em("Lislejoem"), "and sourced by
@@ -39,7 +39,19 @@ introduction <- tabPanel(
     ),
     tags$a(
       href = "https://www.kaggle.com/lislejoem/us-minimum-wage-by-state-from-1968-to-2017",
-      "You can find a link to the data by clicking here."
+      "You can find a link to the minimum wage data by clicking here."
+    ),
+    tags$br(),
+    tags$br(),
+    tags$p(
+      "The educational attainment data table was built by Jerry Lin from the U.S
+      Census Bureau FactFinder tool.  This data is used to find insights in education
+      attainment levels and includes data on poverty levels in relation to education
+      attainment also."
+    ),
+    tags$a(
+      href = "https://factfinder.census.gov/faces/tableservices/jsf/pages/productview.xhtml?pid=ACS_17_5YR_S1501&prodType=table",
+      "The base table for education attainment can be found here."
     ),
     tags$h4(strong("Questions that can be asked", style = "color: #2C3E50;")),
     tags$p("The data set is 2,750 rows long and summarizes information by
