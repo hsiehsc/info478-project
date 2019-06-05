@@ -232,8 +232,9 @@ shiny_3d <- tabPanel(
         inputId = "target",
         label = h3("Select a State"),
         # Choices to select states
-        choices = unique(minimum_wage$State),
-        selected = unique(minimum_wage$State)
+        choices = append("None", append("All",
+          unique(minimum_wage$State))),
+        selected = "All"
       )
     ),
     mainPanel(

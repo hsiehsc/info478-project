@@ -12,9 +12,9 @@ maker <- function(target) {
 
   final_data <- left_join(minimum_wage, all_data, by = c("State" = "X", "Year" = "Year"))
   
-  if(!is.null(target)) {
+  if(!is.null(target) & !("All" %in% target)) {
     final_data <- final_data[final_data$State %in% target, ]
-  }
+  } 
   
   final_data <- final_data %>%
     select(State, Year, x.rfbmi2, High.2018)
